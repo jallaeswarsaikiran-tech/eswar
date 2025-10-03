@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalla Eswar Sai Kiran | Full Stack Developer</title>
+    <!-- Load Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide icons (used throughout the original React code) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load EmailJS CDN -->
+    <script src="https://cdn.emailjs.com/sdk/2.3.2/email.min.js"></script>
+    <style>
+        /* Custom Font Setup */
+        :root {
+            --inter: 'Inter', sans-serif;
+        }
+        body {
+            font-family: var(--inter);
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Styles for Cursor Blob (replacing Framer Motion's mouse follow) */
+        #cursor-blob {
+            transition: transform 0.1s ease-out; /* Smoother follow effect */
+        }
+
+        /* Custom Keyframe Animation for Scroll Indicator */
+        @keyframes bounce-scroll {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        .animate-scroll-bounce {
+            animation: bounce-scroll 2s infinite;
+        }
+        
+        /* Custom Styles for Fixed Navigation */
+        #main-nav {
+            transform: translateY(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Utility classes for responsive design and visual flair */
+        .gradient-text {
+            background-image: linear-gradient(to right, var(--tw-gradient-stops));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .from-blue-400 { --tw-gradient-from: #60a5fa var(--tw-gradient-stops); }
+        .to-cyan-400 { --tw-gradient-to: #22d3ee var(--tw-gradient-stops); }
+
+        /* Animation for Profile Image Border */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Custom Keyframe Animation for Rotating Cube in Hero */
+        @keyframes cube-rotate {
+            0% { transform: perspective(1000px) rotateY(0deg) rotateX(0deg); }
+            50% { transform: perspective(1000px) rotateY(180deg) rotateX(15deg); }
+            100% { transform: perspective(1000px) rotateY(360deg) rotateX(0deg); }
+        }
+        .animate-cube-rotate {
+            animation: cube-rotate 20s linear infinite;
+        }
+
+        /* Scroll Reveal Animations (Hidden State) */
+        .scroll-reveal-hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        /* Scroll Reveal Animations (Visible State) */
+        .scroll-reveal-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 text-white min-h-screen overflow-x-hidden">
+
+    <!-- Animated Cursor Blob -->
+    <div id="cursor-blob" class="fixed w-96 h-96 rounded-full bg-blue-500/10 blur-3xl pointer-events-none z-0"></div>
+
+    <!-- Progress Bar (Vanilla JS updates its width) -->
+    <div id="progress-bar" class="fixed top-0 left-0 right-0 h-1 bg-blue-500 origin-left z-50 transition-all duration-100"></div>
+
+    <!-- Navigation -->
+    <nav id="main-nav" class="fixed top-0 w-full bg-slate-950/80 backdrop-blur-xl z-40 border-b border-blue-500/20">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="text-2xl font-bold gradient-text from-blue-400 to-cyan-400">
+                Eswar
+            </div>
+            
+            <!-- Desktop Links -->
+            <div class="hidden md:flex gap-8" id="desktop-menu">
+                <a href="#home" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="home">Home</a>
+                <a href="#about" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="about">About</a>
+                <a href="#skills" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="skills">Skills</a>
+                <a href="#projects" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="projects">Projects</a>
+                <a href="#experience" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="experience">Experience</a>
+                <a href="#contact" class="nav-link hover:text-blue-400 transition-colors text-slate-300" data-section="contact">Contact</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="menu-toggle-btn" class="md:hidden z-50 text-blue-400">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu (Content populated by JS) -->
+        <div id="mobile-menu" class="md:hidden bg-slate-900/95 backdrop-blur-xl overflow-hidden max-h-0 transition-max-height duration-300 ease-in-out">
+            <!-- Links inserted here by JS -->
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex items-center justify-center relative pt-20 px-6">
+            <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center pt-24 md:pt-0">
+                <!-- Hero Content -->
+                <div class="scroll-reveal-delay-1">
+                    <div class="text-blue-400 font-semibold mb-4 text-xl">
+                        Hello, I'm
+                    </div>
+                    <h1 class="text-5xl lg:text-7xl font-extrabold mb-6 gradient-text from-blue-400 via-cyan-400 to-blue-500">
+                        Jalla Eswar Sai Kiran
+                    </h1>
+                    <p class="text-2xl md:text-3xl text-slate-300 mb-8 font-light">
+                        Full Stack Developer & UI/UX Enthusiast
+                    </p>
+                    <p class="text-slate-400 text-lg mb-8 max-w-xl">
+                        Crafting full-stack web solutions with **React, Node.js, and MongoDB**. Passionate about building scalable applications from frontend to backend, transforming ideas into complete digital experiences.
+                    </p>
+                    <div class="flex gap-4 flex-wrap">
+                        <a href="#contact" class="px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all text-white shadow-lg shadow-blue-500/30">
+                            Get In Touch
+                        </a>
+                        <a href="#projects" class="px-8 py-4 border-2 border-blue-500 rounded-full font-semibold hover:bg-blue-500/10 transition-all text-blue-300">
+                            View Work
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Cube Animation -->
+                <div class="relative hidden md:block scroll-reveal-delay-2">
+                    <div class="w-full h-96 rounded-3xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl border border-blue-500/30 flex items-center justify-center shadow-2xl shadow-blue-500/20 animate-cube-rotate" style="transform: perspective(1000px);">
+                        <i data-lucide="code" class="w-32 h-32 text-blue-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator animation -->
+            <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-scroll-bounce">
+                <i data-lucide="chevron-down" class="w-8 h-8 text-blue-400"></i>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text from-blue-400 to-cyan-400 scroll-reveal-hidden" data-reveal-delay="0.1">
+                    About Me
+                </h2>
+                
+                <!-- Profile Image Section -->
+                <div class="flex justify-center mb-12">
+                    <div id="profile-animation-wrapper" class="relative scroll-reveal-hidden" data-reveal-delay="0.2">
+                        <div id="profile-image-container" class="relative w-64 h-64 mx-auto cursor-pointer">
+                            <!-- Animated Gradient Border -->
+                            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500 p-1" style="animation: rotate 8s linear infinite;">
+                                <div class="w-full h-full rounded-full bg-slate-950"></div>
+                            </div>
+                            
+                            <!-- Profile Image Display Area (Content now inserted by JavaScript) -->
+                            <div id="image-display" class="absolute inset-2 rounded-full overflow-hidden border-4 border-blue-500/30 shadow-2xl shadow-blue-500/50 bg-slate-900 flex items-center justify-center">
+                                <!-- Placeholder content removed, injected by loadDefaultImage() -->
+                            </div>
+                            
+                            <!-- Status Badge -->
+                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full text-sm font-semibold shadow-xl shadow-blue-500/30 z-10">
+                                Available for Work
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Input (Hidden from view) -->
+                        <input id="imageUpload" type="file" accept="image/*" class="hidden">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <!-- About Text Content -->
+                    <div id="about-text-content" class="space-y-4 text-slate-300 text-lg scroll-reveal-hidden" data-reveal-delay="0.3">
+                        <p>
+                            I'm a detail-oriented Computer Engineering graduate from DVR&DHS MIC College of Technology with a strong foundation in **full-stack development** and cloud technologies.
+                        </p>
+                        <p>
+                            With hands-on experience in the **MERN stack** (MongoDB, Express.js, React.js, Node.js), I specialize in building complete web applications - from intuitive user interfaces to robust backend APIs and database architecture.
+                        </p>
+                        <p>
+                            My passion lies in creating **end-to-end solutions** that are scalable, efficient, and user-centric, while continuously exploring emerging technologies in both frontend and backend development.
+                        </p>
+                        <div class="flex gap-4 pt-4">
+                            <!-- Social Links -->
+                            <a href="https://www.linkedin.com/in/jalla-eswar-sai-kiran-82227728b" target="_blank" rel="noopener noreferrer" class="p-3 bg-blue-500/10 rounded-full hover:bg-blue-500/20 transition-colors border border-blue-500/30 text-blue-400">
+                                <i data-lucide="linkedin" class="w-6 h-6"></i>
+                            </a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="p-3 bg-blue-500/10 rounded-full hover:bg-blue-500/20 transition-colors border border-blue-500/30 text-blue-400">
+                                <i data-lucide="github" class="w-6 h-6"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Grid (Content populated by JS) -->
+                    <div id="achievements-grid" class="grid grid-cols-2 gap-4">
+                        <!-- Achievements will be injected here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="py-20 px-6 bg-blue-950/20">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text from-blue-400 to-cyan-400 scroll-reveal-hidden" data-reveal-delay="0.1">
+                    Skills & Technologies
+                </h2>
+                <!-- Skills content populated by JS -->
+                <div id="skills-grid" class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Skills will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text from-blue-400 to-cyan-400 scroll-reveal-hidden" data-reveal-delay="0.1">
+                    Featured Projects
+                </h2>
+                <!-- Projects content populated by JS -->
+                <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Projects will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-20 px-6 bg-blue-950/20">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold mb-12 text-center gradient-text from-blue-400 to-cyan-400 scroll-reveal-hidden" data-reveal-delay="0.1">
+                    Experience & Internships
+                </h2>
+                <!-- Experience content populated by JS -->
+                <div id="experience-list" class="space-y-6">
+                    <!-- Experiences will be injected here by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 gradient-text from-blue-400 to-cyan-400 scroll-reveal-hidden" data-reveal-delay="0.1">
+                        Let's Work Together
+                    </h2>
+                    <p class="text-slate-300 text-lg mb-12 max-w-2xl mx-auto scroll-reveal-hidden" data-reveal-delay="0.2">
+                        I'm always open to discussing new projects, creative ideas, or opportunities to be part of your visions.
+                    </p>
+
+                    <!-- Contact Cards -->
+                    <div id="contact-cards" class="grid md:grid-cols-3 gap-6 mb-12">
+                        <a href="tel:+917989965124" class="p-6 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl hover:border-blue-400 transition-all block hover:scale-[1.05] hover:-translate-y-1 scroll-reveal-hidden" data-reveal-delay="0.3">
+                            <i data-lucide="phone" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
+                            <h3 class="font-semibold mb-2">Phone</h3>
+                            <p class="text-slate-400 text-sm">+91-7989965124</p>
+                        </a>
+
+                        <button id="show-modal-btn" class="p-6 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl hover:border-blue-400 transition-all cursor-pointer hover:scale-[1.05] hover:-translate-y-1 scroll-reveal-hidden" data-reveal-delay="0.4">
+                            <i data-lucide="mail" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
+                            <h3 class="font-semibold mb-2">Email</h3>
+                            <p class="text-slate-400 text-sm">Click to Send</p>
+                        </button>
+
+                        <div class="p-6 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl hover:scale-[1.05] hover:-translate-y-1 scroll-reveal-hidden" data-reveal-delay="0.5">
+                            <i data-lucide="map-pin" class="w-8 h-8 text-blue-400 mx-auto mb-3"></i>
+                            <h3 class="font-semibold mb-2">Location</h3>
+                            <p class="text-slate-400 text-sm">Bantumilli, Vijayawada</p>
+                        </div>
+                    </div>
+
+                    <button id="send-message-btn-bottom" class="inline-block px-12 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full font-semibold text-lg hover:from-blue-600 hover:to-cyan-600 transition-all shadow-xl shadow-blue-500/30 scroll-reveal-hidden" data-reveal-delay="0.6">
+                        Send Message
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Form Modal (Hidden by default) -->
+        <div id="contact-modal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 items-center justify-center p-6 opacity-0 transition-opacity duration-300">
+            <div id="modal-content" class="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl p-8 max-w-md w-full border border-blue-500/30 shadow-2xl transition-transform duration-300 transform scale-90 translate-y-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold gradient-text from-blue-400 to-cyan-400">
+                        Send Message
+                    </h3>
+                    <button id="close-modal-btn" class="p-2 hover:bg-blue-500/10 rounded-full transition-colors text-slate-300">
+                        <i data-lucide="x" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <form id="contact-form" class="space-y-4">
+                    <div>
+                        <!-- Note: The 'name' attribute is critical for EmailJS to find the form fields -->
+                        <label for="contactName" class="block text-sm font-medium text-slate-300 mb-2">Your Name *</label>
+                        <input id="contactName" type="text" name="user_name" required class="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-white placeholder-slate-500 transition-all" placeholder="Enter your name">
+                    </div>
+                    <div>
+                        <label for="contactEmail" class="block text-sm font-medium text-slate-300 mb-2">Your Email *</label>
+                        <input id="contactEmail" type="email" name="user_email" required class="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-white placeholder-slate-500 transition-all" placeholder="your.email@example.com">
+                    </div>
+                    <div>
+                        <label for="contactMessage" class="block text-sm font-medium text-slate-300 mb-2">Message *</label>
+                        <textarea id="contactMessage" name="message" required rows="4" class="w-full px-4 py-3 bg-slate-900/50 border border-blue-500/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 text-white placeholder-slate-500 resize-none transition-all" placeholder="Write your message here..."></textarea>
+                    </div>
+
+                    <!-- Status Message Area -->
+                    <div id="form-status" class="py-2 text-center hidden rounded-lg text-sm transition-all duration-300"></div>
+
+                    <button id="submit-btn" type="submit" class="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg">
+                        Send Message
+                    </button>
+                    <p class="text-xs text-slate-400 text-center">
+                        Your message will be sent directly via EmailJS.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-blue-500/20 text-center text-slate-400">
+        <p>© 2025 Jalla Eswar Sai Kiran. Crafted with **HTML, Tailwind CSS & Vanilla JS**.</p>
+    </footer>
+
+    <!-- JavaScript for Interactivity and Dynamic Content -->
+    <script>
+        // Use lucide.createIcons() to render icons included in the HTML
+        lucide.createIcons();
+        
+        // --- EmailJS Configuration (MUST REPLACE) ---
+        // 🚨 IMPORTANT: Replace these placeholder values with your actual EmailJS credentials
+        const EMAILJS_SERVICE_ID = 'service_xxxxxxxx'; 
+        const EMAILJS_TEMPLATE_ID = 'template_xxxxxxxx';
+        const EMAILJS_PUBLIC_KEY = 'user_xxxxxxxxxxxxxxx'; 
+
+        // --- Profile Image Configuration ---
+        const DEFAULT_PROFILE_IMAGE = 'https://i.ibb.co/7xfZX0X6/eswar.jpg';
+
+        // --- Data Definitions (from React state) ---
+        const DATA = {
+            skills: {
+                frontend: ['HTML', 'CSS', 'JavaScript', 'React.js', 'Bootstrap', 'Tailwind CSS'],
+                backend: ['Node.js', 'Express.js', 'Python', 'Java', 'REST APIs'],
+                database: ['MongoDB', 'SQL', 'Firebase'],
+                tools: ['Git & GitHub', 'Google Cloud', 'Netlify', 'Visual Studio', 'Figma']
+            },
+            projects: [
+                {
+                    title: 'Restaurant Reservation & Menu System',
+                    desc: 'Full-stack web app with table booking, food ordering, and real-time animations',
+                    tech: ['React', 'Node.js', 'MongoDB', 'Framer Motion'],
+                    highlights: ['40% increase in user engagement', '25% reduction in booking errors', 'Real-time availability checks'],
+                    period: 'Nov 2024 - Feb 2025'
+                },
+                {
+                    title: 'College Event Management System',
+                    desc: 'Full-featured event management platform for college festivals',
+                    tech: ['MERN Stack', 'Firebase', 'Netlify'],
+                    highlights: ['Event scheduling & student registrations', 'Admin dashboards with analytics', 'Responsive UI deployed on Netlify'],
+                    period: '2024',
+                    link: 'https://college-event-management.netlify.app/'
+                },
+                {
+                    title: 'Hackathon Project – Top 5 Finish',
+                    desc: 'Innovative platform with real-time collaboration tools - Secured Top 5 rank nationally',
+                    tech: ['React.js', 'Node.js', 'MongoDB', 'Tailwind CSS'],
+                    highlights: ['Top 5 in national-level hackathon', 'Real-time collaboration & authentication', 'Scalable backend APIs with optimized UI'],
+                    period: '2024',
+                    link: '#'
+                }
+            ],
+            experiences: [
+                {
+                    title: 'Google Cloud Foundation',
+                    company: 'Google | Eduskills / Qwiklabs',
+                    period: '2025',
+                    points: ['Deployed cloud applications on Google Cloud', 'Worked with Compute Engine, Cloud Functions, BigQuery']
+                },
+                {
+                    title: 'Google AI & Machine Learning',
+                    company: 'Eduskills',
+                    period: '2025',
+                    points: ['Built ML models using Python, Pandas, Scikit-learn', 'Completed modules on neural networks']
+                },
+                {
+                    title: 'Android App Development',
+                    company: 'Google | Eduskills',
+                    period: '2024',
+                    points: ['Built Android apps using Java and XML', 'Implemented layouts, intents, and UI elements']
+                },
+                {
+                    title: 'Blue Prism RPA & Automation',
+                    company: 'Eduskills',
+                    period: '2023',
+                    points: ['Built automation flows using Blue Prism', 'Learned RPA fundamentals']
+                }
+            ],
+            achievements: [
+                { icon: '🏆', title: '1st Place District Debate', desc: 'Won district-wide debate competition with 500+ attendees' },
+                { icon: '🎓', title: 'Top 3 in Class', desc: 'Achieved top 3 position in B.Tech Computer Engineering' },
+                { icon: '🎭', title: 'MIC Fest Coordinator', desc: 'Organized cultural fest for 3,000+ attendees' }
+            ]
+        };
+
+        // --- DOM Elements & State ---
+        const DOM = {
+            progressBar: document.getElementById('progress-bar'),
+            menuToggleBtn: document.getElementById('menu-toggle-btn'),
+            mobileMenu: document.getElementById('mobile-menu'),
+            desktopMenu: document.getElementById('desktop-menu'),
+            navLinks: document.querySelectorAll('.nav-link'),
+            cursorBlob: document.getElementById('cursor-blob'),
+            contactModal: document.getElementById('contact-modal'),
+            modalContent: document.getElementById('modal-content'),
+            closeModalBtn: document.getElementById('close-modal-btn'),
+            showModalBtn: document.getElementById('show-modal-btn'),
+            contactForm: document.getElementById('contact-form'),
+            imageUpload: document.getElementById('imageUpload'),
+            imageDisplay: document.getElementById('image-display'),
+            skillsGrid: document.getElementById('skills-grid'),
+            projectsGrid: document.getElementById('projects-grid'),
+            experienceList: document.getElementById('experience-list'),
+            achievementsGrid: document.getElementById('achievements-grid'),
+            
+            // New EmailJS elements
+            formStatus: document.getElementById('form-status'),
+            submitBtn: document.getElementById('submit-btn'),
+
+            // Elements for Intersection Observer
+            aboutHeading: document.querySelector('#about h2'),
+            skillsHeading: document.querySelector('#skills h2'),
+            projectsHeading: document.querySelector('#projects h2'),
+            experienceHeading: document.querySelector('#experience h2'),
+            contactHeading: document.querySelector('#contact h2'),
+            aboutTextContent: document.getElementById('about-text-content'),
+            profileWrapper: document.getElementById('profile-animation-wrapper'),
+            contactCards: document.getElementById('contact-cards'),
+            contactButtonBottom: document.getElementById('send-message-btn-bottom')
+        };
+
+        let state = {
+            isMenuOpen: false,
+            activeSection: 'home'
+        };
+
+        // --- Core Functions ---
+
+        /**
+         * Toggles the mobile navigation menu open/closed.
+         */
+        function toggleMenu() {
+            state.isMenuOpen = !state.isMenuOpen;
+            const icon = DOM.menuToggleBtn.querySelector('i');
+            
+            if (state.isMenuOpen) {
+                // Open menu
+                DOM.mobileMenu.style.maxHeight = DOM.mobileMenu.scrollHeight + "px";
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                // Close menu
+                DOM.mobileMenu.style.maxHeight = '0';
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            // Re-render lucide icons after updating the attribute
+            lucide.createIcons();
+        }
+
+        /**
+         * Updates the scroll progress bar width based on scroll position.
+         */
+        function updateProgressBar() {
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = window.scrollY / scrollTotal;
+            DOM.progressBar.style.width = `${scrollProgress * 100}%`;
+        }
+
+        /**
+         * Updates the active section in the navigation links based on scroll position.
+         */
+        function updateActiveSection() {
+            let current = 'home';
+            const sections = ['home', 'about', 'skills', 'projects', 'experience', 'contact'];
+            
+            sections.forEach(sectionId => {
+                const element = document.getElementById(sectionId);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    // Check if the section is within a comfortable range of the top (adjusted for fixed header)
+                    if (rect.top <= 150 && rect.bottom >= 150) {
+                        current = sectionId;
+                    }
+                }
+            });
+
+            // Update state and styles only if changed
+            if (state.activeSection !== current) {
+                state.activeSection = current;
+                DOM.navLinks.forEach(link => {
+                    link.classList.remove('text-blue-400');
+                    link.classList.add('text-slate-300');
+                    if (link.getAttribute('data-section') === current) {
+                        link.classList.add('text-blue-400');
+                        link.classList.remove('text-slate-300');
+                    }
+                });
+            }
+        }
+
+        /**
+         * Displays status message in the contact form.
+         */
+        function updateFormStatus(message, type = 'info') {
+            DOM.formStatus.textContent = message;
+            // Reset classes
+            DOM.formStatus.classList.remove('hidden', 'bg-red-500/20', 'bg-green-500/20', 'bg-blue-500/20', 'text-red-300', 'text-green-300', 'text-blue-300');
+            
+            if (type === 'success') {
+                DOM.formStatus.classList.add('bg-green-500/20', 'text-green-300');
+            } else if (type === 'error') {
+                DOM.formStatus.classList.add('bg-red-500/20', 'text-red-300');
+            } else {
+                DOM.formStatus.classList.add('bg-blue-500/20', 'text-blue-300');
+            }
+            DOM.formStatus.style.display = 'block';
+        }
+
+        /**
+         * Shows the contact modal with transition effects and clears previous status.
+         */
+        function showContactModal() {
+            // Clear status when opening modal
+            DOM.formStatus.classList.add('hidden');
+            DOM.formStatus.style.display = 'none';
+
+            DOM.contactModal.classList.remove('hidden');
+            DOM.contactModal.style.display = 'flex';
+            setTimeout(() => {
+                DOM.contactModal.style.opacity = '1';
+                DOM.modalContent.classList.remove('scale-90', 'translate-y-12');
+            }, 10);
+        }
+
+        /**
+         * Hides the contact modal with transition effects.
+         */
+        function hideContactModal() {
+            DOM.contactModal.style.opacity = '0';
+            DOM.modalContent.classList.add('scale-90', 'translate-y-12');
+            setTimeout(() => {
+                DOM.contactModal.classList.add('hidden');
+                DOM.contactModal.style.display = 'none';
+            }, 300); // Matches the CSS transition duration
+        }
+
+        /**
+         * Handles contact form submission using EmailJS.
+         */
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            
+            DOM.submitBtn.disabled = true;
+            DOM.submitBtn.textContent = 'Sending...';
+            updateFormStatus('Sending your message...', 'info');
+
+            try {
+                // Send form data using the configured IDs
+                const result = await emailjs.sendForm(
+                    EMAILJS_SERVICE_ID, 
+                    EMAILJS_TEMPLATE_ID, 
+                    e.target, 
+                    EMAILJS_PUBLIC_KEY
+                );
+                
+                updateFormStatus('Message sent successfully! Thank you.', 'success');
+                e.target.reset(); // Clear form on success
+                
+                // Automatically hide modal after a delay
+                setTimeout(hideContactModal, 3000);
+
+            } catch (error) {
+                console.error("EmailJS Error:", error);
+                updateFormStatus('Failed to send message. Please check console or try again later.', 'error');
+            } finally {
+                DOM.submitBtn.disabled = false;
+                DOM.submitBtn.textContent = 'Send Message';
+            }
+        }
+
+        /**
+         * Loads the default profile image into the display area.
+         */
+        function loadDefaultImage() {
+             DOM.imageDisplay.innerHTML = `
+                <img src="${DEFAULT_PROFILE_IMAGE}" 
+                     alt="Jalla Eswar Sai Kiran" 
+                     onerror="this.onerror=null;this.src='https://placehold.co/256x256/1e293b/60a5fa?text=Eswar'"
+                     class="w-full h-full object-cover"
+                />
+                <label for="imageUpload" class="absolute bottom-2 right-2 p-2 bg-blue-500 hover:bg-blue-600 rounded-full cursor-pointer shadow-lg transition-all hover:scale-[1.1]" title="Change Photo">
+                     <i data-lucide="camera" class="w-5 h-5 text-white"></i>
+                </label>
+            `;
+            // Re-render the camera icon that was just injected
+            lucide.createIcons(); 
+        }
+
+        // --- Dynamic Content Rendering ---
+
+        function renderAchievements() {
+            DOM.achievementsGrid.innerHTML = DATA.achievements.map((a, idx) => `
+                <div class="p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-2xl border border-blue-500/20 backdrop-blur-xl transition-all hover:scale-[1.05] hover:-translate-y-1 hover:shadow-xl scroll-reveal-hidden" data-reveal-delay="${0.5 + idx * 0.1}">
+                    <div class="text-4xl mb-3">${a.icon}</div>
+                    <h3 class="font-semibold mb-2 text-blue-300">${a.title}</h3>
+                    <p class="text-sm text-slate-400">${a.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderSkills() {
+            DOM.skillsGrid.innerHTML = Object.entries(DATA.skills).map(([category, items]) => `
+                <div class="p-8 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl transition-all shadow-xl shadow-slate-900/50 hover:scale-[1.02] scroll-reveal-hidden" data-reveal-delay="0.2">
+                    <h3 class="text-2xl font-bold mb-6 text-blue-300 capitalize flex items-center gap-2">
+                        <i data-lucide="code" class="w-6 h-6 text-cyan-400"></i>
+                        ${category.replace('_', ' ')}
+                    </h3>
+                    <div class="flex flex-wrap gap-3">
+                        ${items.map(skill => `
+                            <span class="px-4 py-2 bg-blue-500/10 rounded-full text-sm border border-blue-500/30 hover:border-blue-400 transition-all text-slate-200 shadow-md hover:scale-[1.1]">
+                                ${skill}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProjects() {
+            DOM.projectsGrid.innerHTML = DATA.projects.map((p, idx) => {
+                const linkIcon = p.link ? `
+                    <a href="${typeof p.link === 'string' ? p.link : '#'}" target="_blank" rel="noopener noreferrer" class="hover:scale-[1.2]">
+                        <i data-lucide="external-link" class="w-4 h-4 text-blue-400 hover:text-blue-300"></i>
+                    </a>
+                ` : '';
+                
+                const clickHandler = typeof p.link === 'string' ? `onclick="window.open('${p.link}', '_blank')"` : '';
+
+                return `
+                    <div class="p-6 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl group cursor-pointer transition-all duration-300 transform perspective-1000 hover:scale-[1.03] scroll-reveal-hidden" data-reveal-delay="${0.2 + idx * 0.1}">
+                        <div class="flex justify-between items-start mb-4">
+                            <i data-lucide="rocket" class="w-8 h-8 text-blue-400 group-hover:rotate-45 transition-transform duration-500"></i>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-slate-400">${p.period}</span>
+                                ${linkIcon}
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-blue-300">${p.title}</h3>
+                        <p class="text-slate-300 mb-4">${p.desc}</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            ${p.tech.map(tech => `
+                                <span class="px-3 py-1 bg-blue-500/10 rounded-full text-xs border border-blue-500/30 text-cyan-300">
+                                    ${tech}
+                                </span>
+                            `).join('')}
+                        </div>
+                        <ul class="space-y-2">
+                            ${p.highlights.map(highlight => `
+                                <li class="text-sm text-slate-400 flex items-start gap-2">
+                                    <span class="text-blue-400 mt-1">•</span>
+                                    ${highlight}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        ${typeof p.link === 'string' ? `
+                            <div class="mt-4 pt-4 border-t border-blue-500/20 text-center hover:scale-[1.05]">
+                                <span class="text-sm text-blue-400 font-semibold">Click to view live project →</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderExperience() {
+            DOM.experienceList.innerHTML = DATA.experiences.map((exp, idx) => `
+                <div class="p-6 bg-gradient-to-br from-slate-900/50 to-blue-950/50 rounded-2xl border border-blue-500/20 backdrop-blur-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl scroll-reveal-hidden" data-reveal-delay="${0.2 + idx * 0.1}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-blue-300 mb-1 flex items-center gap-2">
+                                <i data-lucide="briefcase" class="w-5 h-5 text-cyan-400"></i>
+                                ${exp.title}
+                            </h3>
+                            <p class="text-slate-300 text-sm">${exp.company}</p>
+                        </div>
+                        <span class="px-4 py-2 bg-blue-500/10 rounded-full text-sm border border-blue-500/30 text-slate-200">
+                            ${exp.period}
+                        </span>
+                    </div>
+                    <ul class="space-y-2">
+                        ${exp.points.map(point => `
+                            <li class="text-slate-400 flex items-start gap-2">
+                                <span class="text-blue-400 mt-1">•</span>
+                                ${point}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `).join('');
+        }
+        
+        // Populate mobile menu dynamically
+        function setupMobileMenu() {
+            const sections = ['Home', 'About', 'Skills', 'Projects', 'Experience', 'Contact'];
+            DOM.mobileMenu.innerHTML = sections.map(item => `
+                <a href="#${item.toLowerCase()}" class="block px-6 py-4 hover:bg-blue-500/10 transition-colors border-t border-blue-500/10" onclick="toggleMenu()">
+                    ${item}
+                </a>
+            `).join('');
+        }
+
+        /**
+         * Handles the profile image upload.
+         */
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const imageUrl = event.target.result;
+                    DOM.imageDisplay.innerHTML = `
+                        <img src="${imageUrl}" alt="Profile" class="w-full h-full object-cover"/>
+                        <label for="imageUpload" class="absolute bottom-2 right-2 p-2 bg-blue-500 hover:bg-blue-600 rounded-full cursor-pointer shadow-lg transition-all hover:scale-[1.1]" title="Change Photo">
+                             <i data-lucide="camera" class="w-5 h-5 text-white"></i>
+                        </label>
+                    `;
+                    lucide.createIcons(); // Re-render the camera icon
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // --- Animation Logic (Intersection Observer) ---
+        
+        function handleIntersection(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = parseFloat(entry.target.getAttribute('data-reveal-delay')) || 0;
+                    
+                    // Apply animation after a slight delay
+                    setTimeout(() => {
+                        entry.target.classList.add('scroll-reveal-visible');
+                        entry.target.classList.remove('scroll-reveal-hidden');
+                        observer.unobserve(entry.target);
+                    }, delay * 1000); // Convert seconds to milliseconds
+                }
+            });
+        }
+
+        const observerOptions = {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.2 // Trigger when 20% of the element is visible
+        };
+
+        const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+        function setupScrollReveal() {
+            // Static elements to observe
+            const animatedElements = [
+                DOM.aboutHeading,
+                DOM.profileWrapper,
+                DOM.aboutTextContent,
+                DOM.skillsHeading,
+                DOM.projectsHeading,
+                DOM.experienceHeading,
+                DOM.contactHeading,
+                document.querySelector('#contact .text-lg.mb-12'), // Contact subtitle
+                DOM.contactCards,
+                DOM.contactButtonBottom
+            ].filter(el => el != null);
+
+            // Dynamic elements to observe (children of grids/lists)
+            animatedElements.push(...Array.from(DOM.achievementsGrid.children));
+            animatedElements.push(...Array.from(DOM.skillsGrid.children));
+            animatedElements.push(...Array.from(DOM.projectsGrid.children));
+            animatedElements.push(...Array.from(DOM.experienceList.children));
+
+            // Apply hidden class and observe
+            animatedElements.forEach(el => {
+                if (!el.classList.contains('scroll-reveal-hidden')) {
+                    el.classList.add('scroll-reveal-hidden');
+                }
+                observer.observe(el);
+            });
+        }
+
+        // --- Event Listeners and Initialization ---
+
+        function initApp() {
+            // Initialize EmailJS
+            (function() {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+            })();
+
+            // Load default profile image
+            loadDefaultImage();
+
+            // Initial content rendering
+            renderAchievements();
+            renderSkills();
+            renderProjects();
+            renderExperience();
+            setupMobileMenu();
+            
+            // Initial progress bar and active section update
+            updateProgressBar();
+            updateActiveSection();
+            
+            // Setup scroll reveal animation after dynamic content loads
+            setupScrollReveal();
+
+            // Re-render lucide icons for dynamically added content
+            lucide.createIcons();
+
+
+            // --- Event Listeners ---
+            
+            // Global Scroll Events
+            window.addEventListener('scroll', () => {
+                updateProgressBar();
+                updateActiveSection();
+            });
+
+            // Mobile Menu
+            DOM.menuToggleBtn.addEventListener('click', toggleMenu);
+            
+            // Custom Cursor Blob
+            window.addEventListener('mousemove', (e) => {
+                DOM.cursorBlob.style.transform = `translate3d(${e.clientX - 192}px, ${e.clientY - 192}px, 0)`;
+            });
+
+            // Contact Modal
+            DOM.showModalBtn.addEventListener('click', showContactModal);
+            document.getElementById('send-message-btn-bottom').addEventListener('click', showContactModal); // Ensure bottom button works
+            DOM.closeModalBtn.addEventListener('click', hideContactModal);
+            DOM.contactModal.addEventListener('click', (e) => {
+                // Close if clicking outside the modal content
+                if (e.target === DOM.contactModal) {
+                    hideContactModal();
+                }
+            });
+            
+            // Contact Form Submission (using EmailJS)
+            DOM.contactForm.addEventListener('submit', handleContactSubmit);
+
+            // Image Upload
+            DOM.imageUpload.addEventListener('change', handleImageUpload);
+        }
+
+        // Initialize the application once the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
