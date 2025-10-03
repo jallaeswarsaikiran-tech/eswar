@@ -359,11 +359,19 @@
         // Use lucide.createIcons() to render icons included in the HTML
         lucide.createIcons();
         
-        // --- EmailJS Configuration (MUST REPLACE) ---
-        // 🚨 IMPORTANT: Replace these placeholder values with your actual EmailJS credentials
-        const EMAILJS_SERVICE_ID = 'service_xxxxxxxx'; 
-        const EMAILJS_TEMPLATE_ID = 'template_xxxxxxxx';
-        const EMAILJS_PUBLIC_KEY = 'user_xxxxxxxxxxxxxxx'; 
+        // ====================================================================================
+        // --- ✅ EMAILJS CONFIGURATION (ALL KEYS ARE NOW SET) --------------------------------
+        // ====================================================================================
+        
+        // 1. Service ID
+        const EMAILJS_SERVICE_ID = 'service_j3yb8gi'; 
+
+        // 2. Template ID (FINAL KEY SET!)
+        const EMAILJS_TEMPLATE_ID = 'template_eu9qphe';
+
+        // 3. Public Key
+        const EMAILJS_PUBLIC_KEY = 'EKwLtF8Jy20Am5-Fd'; 
+        // ------------------------------------------------------------------------------------
 
         // --- Profile Image Configuration ---
         const DEFAULT_PROFILE_IMAGE = 'https://i.ibb.co/7xfZX0X6/eswar.jpg';
@@ -585,11 +593,30 @@
         }
 
         /**
+         * Checks if placeholder keys are used.
+         */
+        function checkPlaceholderKeys() {
+            // Note: Since all keys are provided, this will now return false.
+            return (
+                EMAILJS_SERVICE_ID === 'service_xxxxxxxx' ||
+                EMAILJS_TEMPLATE_ID === 'template_xxxxxxxx' ||
+                EMAILJS_PUBLIC_KEY === 'user_xxxxxxxxxxxxxxx'
+            );
+        }
+
+        /**
          * Handles contact form submission using EmailJS.
          */
         async function handleContactSubmit(e) {
             e.preventDefault();
             
+            // Although keys are set, this check remains to warn if any were accidentally unset later.
+            if (checkPlaceholderKeys()) {
+                 updateFormStatus('ERROR: EmailJS keys are placeholders. Please update EMAILJS_PUBLIC_KEY, _SERVICE_ID, and _TEMPLATE_ID.', 'error');
+                 console.error("EmailJS Configuration Error: Placeholder keys detected. Update the constants in the script block.");
+                 return;
+            }
+
             DOM.submitBtn.disabled = true;
             DOM.submitBtn.textContent = 'Sending...';
             updateFormStatus('Sending your message...', 'info');
@@ -610,8 +637,9 @@
                 setTimeout(hideContactModal, 3000);
 
             } catch (error) {
-                console.error("EmailJS Error:", error);
-                updateFormStatus('Failed to send message. Please check console or try again later.', 'error');
+                // Log and show user-friendly error message
+                console.error("EmailJS Error: Submission Failed.", error);
+                updateFormStatus('Failed to send message. Please verify your EmailJS keys or check the console for details.', 'error');
             } finally {
                 DOM.submitBtn.disabled = false;
                 DOM.submitBtn.textContent = 'Send Message';
@@ -830,6 +858,11 @@
         function initApp() {
             // Initialize EmailJS
             (function() {
+                // WARN if using placeholder keys
+                if (checkPlaceholderKeys()) {
+                    // This warning should no longer appear!
+                    console.warn("⚠️ WARNING: EmailJS is using placeholder keys and will fail. Update your constants.");
+                }
                 emailjs.init(EMAILJS_PUBLIC_KEY);
             })();
 
